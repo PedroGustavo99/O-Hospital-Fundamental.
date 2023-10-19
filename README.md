@@ -12,3 +12,4 @@ Deseja-se ainda informatizar a receita do médico, de maneira que, no encerramen
 
 # PARTE 1
 
+<img src = "o_hospital.jpeg">
