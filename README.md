@@ -26,7 +26,7 @@ Também é necessário controlar quais profissionais de enfermaria estarão resp
 
 A internação, obviamente, é vinculada a um paciente – que pode se internar mais de uma vez no hospital – e a um único médico responsável.
 
-<img src = "o_hospital_fundamental_ER.jpg">
+
 
 # Parte 2 - Diagrama Entidade Relacionamento
 
