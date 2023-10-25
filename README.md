@@ -26,10 +26,10 @@ Também é necessário controlar quais profissionais de enfermaria estarão resp
 
 A internação, obviamente, é vinculada a um paciente – que pode se internar mais de uma vez no hospital – e a um único médico responsável.
 
- <img src = "">
+ <img src = "o_hospital_fundamental_ER.png">
 
 # Parte 2 - Diagrama Entidade Relacionamento
 
 Desse modelo já devemos gerar a etapa lógica da nossa modelagem!
 
-<img src = "">
+<img src = "o_hospital_fundamental_DER.png">
