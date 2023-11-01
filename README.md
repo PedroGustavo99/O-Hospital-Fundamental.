@@ -67,3 +67,15 @@ Observe as seguintes atividades:<p>
 
 <li>Os dados de tipo de quarto, convênio e especialidade são essenciais para a operação do sistema e, portanto, devem ser povoados assim que o sistema for instalado.</li>
 </ul>
+
+# PARTE 4 - A Ordem do Alterar. 
+
+Pensando no banco que já foi criado para o Projeto do Hospital, realize algumas alterações nas tabelas e nos dados usando comandos de atualização e exclusão:
+
+Crie um script que adicione uma coluna “em_atividade” para os médicos, indicando se ele ainda está atuando no hospital ou não. 
+
+Crie um script para atualizar ao menos dois médicos como inativos e os demais em atividade.
+
+<img src = "parte4.png">
+
+<img src = "parte4-2.png">
