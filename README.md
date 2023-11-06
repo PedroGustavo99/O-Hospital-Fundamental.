@@ -80,10 +80,10 @@ Crie um script para atualizar ao menos dois médicos como inativos e os demais e
 
 <img src = "parte4-2.png">
 
-<h3>🔹Parte 5 - Consultas</h3>
+# PARTE 5 - Consultas
 <p> Crie um script e nele inclua consultas que retornem: </p>
 
-* 1) Todos os dados e o valor médio das consultas do ano de 2020 e das que foram feitas sob convênio.
+1) Todos os dados e o valor médio das consultas do ano de 2020 e das que foram feitas sob convênio.
 
 ```
 select *, avg(vlr_consulta) as valor_medio_consultas
@@ -91,23 +91,37 @@ FROM consulta
 where year(dt_consulta) = 2020 and cd_consulta is not null
 group by(dt_consulta), cd_consulta;
 ```
-
-* Todos os dados e o valor médio das consultas do ano de 2020 e das que foram feitas sob convênio.
-
-```
-select * from internacao where data_efet_alta > data_prev_alta;
-```
-
-* Receituário completo da primeira consulta registrada com receituário associado.
-```
-select * from consulta inner join receita on consulta.id_consulta = receita.consulta_id inner join paciente 
-on paciente.id_paciente = consulta.paciente_id order by receita.id_receita limit 1;
-```
-
-* Todos os dados da consulta de maior valor e também da de menor valor (ambas as consultas não foram realizadas sob convênio).
+2) Todos os dados das internações que tiveram data de alta maior que a data prevista para a alta.
 
 ```
-select *, MAX(valor_consulta), MIN(valor_consulta) from consulta group by convenio_id is null;
+select * from internacao
+where dt_alta > dt_previsao_alta;
+```
+
+3) Receituário completo da primeira consulta registrada com receituário associado.
+```
+select * from consulta 
+inner join receita on consulta.cd_consulta = receita.cd_consulta
+inner join paciente on paciente.cd_paciente = consulta.cd_paciente
+order by receita.cd_receita limit 1;
+```
+
+4) Todos os dados da consulta de maior valor e também da de menor valor (ambas as consultas não foram realizadas sob convênio).
+
+```
+(select *
+ from consulta
+ where cd_convenio is null
+ order by vlr_consulta desc
+ limit 1)
+ 
+ UNION
+ 
+ (select *
+ from consulta
+ where cd_convenio is null
+ order by vlr_consulta asc
+ limit 1);
 ```
 
 * Todos os dados das internações em seus respectivos quartos, calculando o total da internação a partir do valor de diária do quarto e o número de dias entre a entrada e a alta.
