@@ -124,59 +124,68 @@ order by receita.cd_receita limit 1;
  limit 1);
 ```
 
-* Todos os dados das internações em seus respectivos quartos, calculando o total da internação a partir do valor de diária do quarto e o número de dias entre a entrada e a alta.
+5) Todos os dados das internações em seus respectivos quartos, calculando o total da internação a partir do valor de diária do quarto e o número de dias entre a entrada e a alta.
 
 ```
-select *, DATEDIFF(data_efet_alta, data_entrada) dias_internado, tipo_quarto.valor_diario, DATEDIFF(data_efet_alta, data_entrada) * tipo_quarto.valor_diario valor_total from internacao inner join quarto on internacao.quarto_id = quarto.id_quarto inner join tipo_quarto on quarto.tipo_id = tipo_quarto.id_tipo;
+SELECT internacao.* , quarto.*, tipo_quarto.nr_valor AS valor_quarto,
+       DATEDIFF(internacao.dt_alta, internacao.dt_procedimento) as dias_internado,
+       DATEDIFF(internacao.dt_alta, internacao.dt_procedimento) * tipo_quarto.nr_valor as valor_total
+FROM internacao
+INNER JOIN quarto ON internacao.cd_quarto = quarto.cd_quarto
+INNER JOIN tipo_quarto ON quarto.cd_tipo_quarto = tipo_quarto.cd_tipo_quarto;
 ```
 
-* Data, procedimento e número de quarto de internações em quartos do tipo “apartamento”.
+6) Data, procedimento e número de quarto de internações em quartos do tipo “apartamento”.
 
 ```
-select i.id_internacao, i.data_entrada, i.desc_procedimentos, q.numero from internacao i inner join quarto q 
-on q.id_quarto = i.quarto_id where q.tipo_id = 1; 
+SELECT i.cd_internacao, i.dt_procedimento, i.desc_procedimentos, q.nr_quarto
+FROM internacao i
+INNER JOIN quarto q ON q.cd_quarto = i.cd_quarto
+WHERE q.cd_tipo_quarto = 1;
 ```
 
-* Nome do paciente, data da consulta e especialidade de todas as consultas em que os pacientes eram menores de 18 anos na data da consulta e cuja especialidade não seja “pediatria”, ordenando por data de realização da consulta.
+7) Nome do paciente, data da consulta e especialidade de todas as consultas em que os pacientes eram menores de 18 anos na data da consulta e cuja especialidade não seja “pediatria”, ordenando por data de realização da consulta.
 
 ```
-select p.nome_paciente, c.data_consulta, e.nome_especialidade from consulta c inner join paciente p 
-on p.id_paciente = c.paciente_id inner join especialidade e 
-on e.id_especialidade = c.especialidade_id 
-where c.especialidade_id <> 1 and year(c.data_consulta) - year(p.dt_nasc_paciente) < 19 and year(c.data_consulta) - year(p.dt_nasc_paciente) > 0 
-order by c.data_consulta ;
+SELECT p.nm_paciente, c.dt_consulta, e.nm_especialidade
+FROM consulta c
+JOIN paciente p ON c.cd_paciente = p.cd_paciente
+JOIN especialidade e ON c.cd_especialidade = e.cd_especialidade
+WHERE DATEDIFF(CURDATE(), p.dt_nascimento) / 365.25 < 18
+AND e.nm_especialidade != 'Pediatria'
+ORDER BY c.dt_consulta;
 ```
 
-* Nome do paciente, nome do médico, data da internação e procedimentos das internações realizadas por médicos da especialidade “gastroenterologia”, que tenham acontecido em “enfermaria”.
-
+8) Nome do paciente, nome do médico, data da internação e procedimentos das internações realizadas por médicos da especialidade “gastroenterologia”, que tenham acontecido em “enfermaria”.
 ```
-select p.nome_paciente, m.nome_medico, i.data_entrada, i.desc_procedimentos, q.id_quarto
-from internacao i
-inner join medico m 
-on m.id_medico = i.medico_id
-inner join paciente p
-on p.id_paciente = i.paciente_id
-inner join quarto q
-on q.id_quarto = i.quarto_id
-where q.tipo_id = 3 and m.especialidade_id = 3;
+SELECT p.nm_paciente, m.nm_medico, i.dt_procedimento, i.desc_procedimentos
+FROM internacao i
+JOIN paciente p ON i.cd_paciente = p.cd_paciente
+JOIN medico m ON i.cd_medico = m.cd_medico
+WHERE m.cd_especialidade = 3 AND i.desc_procedimentos LIKE '%enfermaria%';
 ```
 
-* Os nomes dos médicos, seus CRMs e a quantidade de consultas que cada um realizou.
+9) Os nomes dos médicos, seus CRMs e a quantidade de consultas que cada um realizou.
 
 ```
-select m.nome_medico, m.crm, count(c.medico_id) as 'Qntd de consultas' from medico m inner join consulta c 
-on c.medico_id = m.id_medico group by c.medico_id;
+SELECT m.nm_medico, m.nr_crm, COUNT(c.cd_medico) AS quantidade_de_consultas
+FROM medico m
+LEFT JOIN consulta c ON m.cd_medico = c.cd_medico
+GROUP BY m.nm_medico, m.nr_crm;
 ```
 
-* Todos os médicos que tenham "Gabriel" no nome.
+* 10) Todos os médicos que tenham "Gabriel" no nome. 
 
 ```
-select * from medico where nome_medico like '%Gabriel%';
+select * from medico where nm_medico like '%Gabriel%';
 ```
 
-* Os nomes, CREs e número de internações de enfermeiros que participaram de mais de uma internação.
+11) Os nomes, CREs e número de internações de enfermeiros que participaram de mais de uma internação.
 
 ```
-select enf.nome_enfermeiro, enf.cre, COUNT(p.enfermeiro_id) as Participacao from enfermeiro enf
-inner join plantao p on p.enfermeiro_id = enf.id_enfermeiro group by enf.id_enfermeiro having Participacao > 1;
+SELECT e.nm_enfermeiroo AS Nome_Enfermeiro, e.nr_cre AS CRE, COUNT(ei.cd_internacao) AS Numero_Internacoes
+FROM enfermeiro e
+JOIN enfermeiro_internacao ei ON e.cd_enfermeiro = ei.cd_enfermeiro
+GROUP BY e.nm_enfermeiroo, e.nr_cre
+HAVING COUNT(ei.cd_internacao) > 1;
 ```
